@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+
 
 class CreateStatusTest extends TestCase
 {
@@ -26,7 +28,7 @@ class CreateStatusTest extends TestCase
         $this->withoutExceptionHandling();  // Evita que laravel maneje las exepciones
 
         // 1. Given => Teniendo un usuario autenticado
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         // 2. When => Cuando hace un post request a status
@@ -50,7 +52,7 @@ class CreateStatusTest extends TestCase
     /** @test */
     public function a_status_requires_a_body()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         $response = $this->postJson(route('statuses.store'), ['body' => '']);
@@ -64,7 +66,7 @@ class CreateStatusTest extends TestCase
     /** @test */
     public function a_status_body_requires_a_minimum_length()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         $response = $this->postJson(route('statuses.store'), ['body' => 'abcd']);

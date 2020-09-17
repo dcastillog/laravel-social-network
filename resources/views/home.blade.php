@@ -7,6 +7,8 @@
                 <div class="card ">
                     <status-form />
                 </div>
+                
+                <statuses-list />
             </div>
         </div>
     </div>

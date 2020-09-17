@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+
 class ListStatusesTest extends TestCase
 {
     use RefreshDatabase;
@@ -17,10 +18,10 @@ class ListStatusesTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $status1 = factory(Status::class)->create(['created_at' => now()->subDays(4)]);
-        $status2 = factory(Status::class)->create(['created_at' => now()->subDays(3)]);
-        $status3 = factory(Status::class)->create(['created_at' => now()->subDays(2)]);
-        $status4 = factory(Status::class)->create(['created_at' => now()->subDays(1)]);
+        $status1 = Status::factory()->create(['created_at' => now()->subDays(4)]); // Le resta 4 dias
+        $status2 = Status::factory()->create(['created_at' => now()->subDays(3)]);
+        $status3 = Status::factory()->create(['created_at' => now()->subDays(2)]);
+        $status4 = Status::factory()->create(['created_at' => now()->subDays(1)]);
         
         $response = $this->getJson(route('statuses.index'));
         $response->assertStatus(200);

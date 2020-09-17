@@ -2,11 +2,12 @@
 
 namespace Tests\Browser;
 
-use App\User;
+use App\Models\User;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
+
 
 class LoginTest extends DuskTestCase
 {
@@ -15,14 +16,14 @@ class LoginTest extends DuskTestCase
     /** @test */
     public function registered_users_can_login()
     {
-        factory(User::class)->create(['email' => 'test@email.com']);
+        $user = User::factory()->create(['email' => 'testing@email.com']);
         
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser) use ($user) {
             $browser->visit('/login')
-                    ->type('email','test@email.com')
+                    ->type('email', $user->email)
                     ->type('password', 'password')
-                    ->press('#login-btn')
-                    ->assertPathIs('/') // Verifica que esté en la raíz
+                    ->press('#btnLogin')
+                    ->assertPathIs('/home') // Verifica que esté en la raíz
                     ->assertAuthenticated(); // Verifica si el usuario ha sido autenticado
         });
     }
