@@ -26,16 +26,16 @@ class ListStatusesTest extends TestCase
         $response = $this->getJson(route('statuses.index'));
         $response->assertStatus(200);
         $response->assertJson([
-            'total' => 4
+            'meta' => ['total' => 4]
         ]);
         $response->assertJsonStructure([
-            'data','total','first_page_url','last_page_url'
+            'data','links' => ['prev','next'] //Estructura que devuelve la respues de StatusResource
         ]);
 
         // Se afirma que el primer status creado es el último en crearse (Vienen ordenados del controller)
         $this->assertEquals(
-            $status4->id,
-            $response->json('data.0.id'),  // == data[0]['id']
+            $status4->body,
+            $response->json('data.0.body'),  // == data[0]['body'] Verifica que sea el primero de la respuesta
         );
     }
 }

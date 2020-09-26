@@ -15,16 +15,19 @@ class UsersCanSeeAllStatusesTest extends DuskTestCase
     /** @test */
     public function users_can_see_all_statuses_on_the_homepage()
     {
-        $statuses = Status::factory()->count(3)->create();
+        $statuses = Status::factory()->count(3)->create(['created_at' => now()->subMinute()]);
+        // dump($statuses->first()->body);
         
         $this->browse(function (Browser $browser) use ($statuses) {
-            $browser->visit('/')
+            $browser->visit('/home')
                     ->waitForText($statuses->first()->body);
-            
+
             // Esperamos ver todos los estados
             foreach($statuses as $status)
             {
-                $browser->assertSee($status->body);
+                $browser->assertSee($status->body)
+                        ->assertSee($status->user->name)
+                        ->assertSee($status->created_at->diffForHumans());
             }
         });
     }

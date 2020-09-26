@@ -26,9 +26,7 @@ class StatusFactory extends Factory
     {
         return [
             'body' => $this->faker->paragraph,
-            'user_id' => function (){
-                return User::factory()->create();
-            }
+            'user_id' => User::factory()
         ];
     }
 }

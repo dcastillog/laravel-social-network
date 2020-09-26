@@ -16,9 +16,9 @@ class CreateStatusTest extends TestCase
     /** @test */
     public function guests_can_not_create_statuses()
     {
-        $response = $this->post(route('statuses.store'), ['body' => 'Mi primer estado']);
+        $response = $this->postJson(route('statuses.store'), ['body' => 'Mi primer estado']);
 
-        $response->assertRedirect('login');
+        $response->assertStatus(401);
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class CreateStatusTest extends TestCase
         $response = $this->postJson(route('statuses.store'), ['body' => 'Mi primer estado']);
 
         $response->assertJson([
-            'body' => 'Mi primer estado'
+            'data' => ['body' => 'Mi primer estado'],
         ]); // Verifica que luego de crear el estado nos devuelva un json (desde la vista en Vue)
 
         // 3. Then  => Entonces veo un nuevo estado en la base de datos
@@ -61,6 +61,7 @@ class CreateStatusTest extends TestCase
         $response->assertJsonStructure([ // Verifica solo la estructura del JSON
             'message', 'errors' => ['body']
         ]);
+
     }
 
     /** @test */
