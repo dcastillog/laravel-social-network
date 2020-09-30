@@ -5,6 +5,9 @@ namespace Tests\Unit\Models;
 use App\Models\User;
 use App\Models\Status;
 use App\Models\Like;
+use App\Models\Comment;
+
+use App\Traits\HasLikes;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -22,69 +25,18 @@ class StatusTest extends TestCase
     }
 
     /** @test */
-    public function a_status_has_many_likes()
+    public function a_status_has_many_comments()
     {
         $status = Status::factory()->create();
-        $like = Like::factory()->create(['status_id' => $status->id]);
+        $comment = Comment::factory()->create(['status_id' => $status->id]);
 
-        $this->assertInstanceOf(Like::class, $status->likes->first());
+        $this->assertInstanceOf(Comment::class, $status->comments->first());
     }
 
+    
     /** @test */
-    public function a_status_can_be_liked_and_unlike()
+    public function a_status_model_must_use_the_trait_has_likes()
     {
-        $status = Status::factory()->create();
-
-        $this->actingAs(User::factory()->create());
-        
-        $status->like();
-
-        $this->assertEquals(1, $status->fresh()->likes->count()); // Verifica que el estado tenga un likee
-
-        $status->unlike();
-
-        $this->assertEquals(0, $status->fresh()->likes->count()); //fresh cache
-    }
-
-    /** @test */
-    public function a_status_can_be_liked_once()
-    {
-        $status = Status::factory()->create();
-
-        $this->actingAs(User::factory()->create());
-        
-        $status->like();
-        $this->assertEquals(1, $status->likes->count()); 
-
-        $status->like();
-        $this->assertEquals(1, $status->fresh()->likes->count()); // por default se obtiene datos del cache, fresh() vuelve a ejecutar la consulta 
-    }
-
-    /** @test */
-    public function a_status_knows_if_has_been_liked_and_unliked()
-    {
-        $status = Status::factory()->create();
-
-        $this->assertFalse($status->isLiked());
-        
-        $this->actingAs(User::factory()->create());
-        
-        $this->assertFalse($status->isLiked());
-
-        $status->like();
-
-        $this->assertTrue($status->isLiked());
-    }
-
-    /** @test */
-    public function a_status_knows_how_many_likes_it_has()
-    {
-        $status = Status::factory()->create();
-        
-        $this->assertEquals(0, $status->likesCount());
-
-        Like::factory()->count(2)->create(['status_id' => $status->id]);
-
-        $this->assertEquals(2, $status->likesCount());
+        $this->assertClassUsesTrait(HasLikes::class, Status::class); //Created in TestCase
     }
 }

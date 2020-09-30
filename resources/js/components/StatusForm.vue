@@ -6,6 +6,7 @@
                 class="form-control border-0" 
                 name="body" 
                 :placeholder="`¿Qué estás pensando ${currentUser.name}?`" 
+                required
             />
         </div>
         <div class="card-footer">

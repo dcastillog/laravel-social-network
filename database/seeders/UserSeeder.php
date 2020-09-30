@@ -18,8 +18,12 @@ class UserSeeder extends Seeder
         User::truncate();
 
         User::factory()->create([
-            'name' => 'Administrador',
+            'id' => 1,
+            'name' => 'admin',
+            'first_name' => 'Administrador',
             'email' => 'admin@laranet.com'
-        ]);        
+        ]);
+        
+        User::factory()->count(20)->create();
     }
 }

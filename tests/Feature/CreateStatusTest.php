@@ -2,8 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\StatusResource;
 use App\Models\User;
+use App\Models\Status;
+use App\Events\StatusCreated;
 
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -24,9 +30,8 @@ class CreateStatusTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_create_statuses()
     {
+        Event::fake([StatusCreated::class]);
         
-        $this->withoutExceptionHandling();  // Evita que laravel maneje las exepciones
-
         // 1. Given => Teniendo un usuario autenticado
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -47,6 +52,37 @@ class CreateStatusTest extends TestCase
         ]);
 
 
+    }
+
+    /** @test */
+    public function an_event_is_fired_when_a_status_is_created()
+    {
+        Event::fake([StatusCreated::class]); //simulamos todos los eventos o solo StatusCreated mediante []
+
+        //validamos que reciba el llamado 'socket' y retorne socket-id si es true
+        Broadcast::shouldReceive('socket')->andReturn('socket-id');
+
+        // $this->withoutExceptionHandling();  // Evita que laravel maneje las exepciones
+
+        $user = User::factory()->create();
+        
+        // Verificamos que recibimos una respuesta adecuada
+        $this->actingAs($user)->postJson(route('statuses.store'), ['body' => 'Mi primer estado']);
+
+        Event::assertDispatched(StatusCreated::class, function($statusCreatedEvent){
+            
+            $this->assertInstanceOf(ShouldBroadcast::class, $statusCreatedEvent);
+            $this->assertInstanceOf(StatusResource::class, $statusCreatedEvent->status);
+            $this->assertInstanceOf(Status::class, $statusCreatedEvent->status->resource);
+            $this->assertEquals($statusCreatedEvent->status->id, Status::first()->id);
+            $this->assertEquals(
+                'socket-id', 
+                $statusCreatedEvent->socket, 
+                'The event ' . get_class($statusCreatedEvent) . 'must be call "dontBroadcastToCurrentUser" in the constructor.'
+            );
+
+            return true;
+        }); //verificamos que se dispare el evento y hacemos verificacion
     }
 
     /** @test */

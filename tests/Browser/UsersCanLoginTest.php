@@ -9,7 +9,7 @@ use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 
-class LoginTest extends DuskTestCase
+class UsersCanLoginTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
@@ -22,9 +22,22 @@ class LoginTest extends DuskTestCase
             $browser->visit('/login')
                     ->type('email', $user->email)
                     ->type('password', 'password')
-                    ->press('#btnLogin')
+                    ->press('@btn-login')
                     ->assertPathIs('/home') // Verifica que esté en la raíz
                     ->assertAuthenticated(); // Verifica si el usuario ha sido autenticado
+        });
+    }
+
+    /** @test */
+    public function users_cannot_login_with_invalid_information()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                    ->type('email', '')
+                    ->press('@btn-login')
+                    ->assertPathIs('/login')
+                    ->assertPresent('@validation-errors')
+                ;
         });
     }
 }

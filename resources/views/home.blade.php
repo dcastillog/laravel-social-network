@@ -8,7 +8,7 @@
                     <status-form />
                 </div>
                 
-                <statuses-list />
+                <status-list />
             </div>
         </div>
     </div>

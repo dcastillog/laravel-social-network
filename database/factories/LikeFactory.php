@@ -27,7 +27,6 @@ class LikeFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'status_id' => Status::factory()
         ];        
     }
 }

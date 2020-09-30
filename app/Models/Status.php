@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Like;
+use App\Models\Comment;
+
+use App\Traits\HasLikes;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +15,8 @@ class Status extends Model
 {
     use HasFactory;
         
+    use HasLikes;
+
     protected $guarded = []; // Desabilita la protección de asignación masiva, si se usa nunca debemos guardar de la manera Status::create($request->all())
 
     public function user()
@@ -19,32 +24,8 @@ class Status extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function likes()
+    public function comments()
     {
-        return $this->hasMany(Like::class);
-    }
-
-    public function like() // Ejecuta el like 
-    {
-        $this->likes()->firstOrCreate([
-            'user_id' => auth()->id()
-        ]);
-    }
-
-    public function isLiked()
-    {   
-        return $this->likes()->where('user_id', auth()->id())->exists(); //nos interesa saber si existe en bd
-    }
-
-    public function unlike()
-    {
-        $this->likes()->where([
-            'user_id' => auth()->id()
-        ])->delete();
-    }
-
-    public function likesCount()
-    {
-        return $this->likes()->count();
+        return $this->hasMany(Comment::class);
     }
 }

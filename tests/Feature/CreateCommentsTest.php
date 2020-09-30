@@ -31,13 +31,35 @@ class CreateCommentsTest extends TestCase
         $status = Status::factory()->create();
         $comment = ['body' => 'Mi primer comentario'];
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->postJson( route('statuses.comments.store', $status), $comment);
+
+        $response->assertJson([
+            'data' => ['body' => $comment['body']]
+        ]);
 
         $this->assertDatabaseHas('comments', [
             'user_id' => $user->id,
             'status_id' => $status->id,
             'body' => $comment['body']
         ]);
+    }
+
+    /** @test */
+    public function a_comment_requires_a_body()
+    {
+        $status = Status::factory()->create();
+        $user = User::factory()->create();
+        
+        $this->actingAs($user);
+ 
+        $response = $this->postJson(route('statuses.comments.store', $status), ['body' => '']);
+        
+        $response->assertStatus(422); // 422: Entidad no procesable
+        
+        $response->assertJsonStructure([ // Verifica solo la estructura del JSON
+            'message', 'errors' => ['body']
+        ]);
+
     }
 }
