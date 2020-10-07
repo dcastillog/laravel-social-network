@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Status;
 
 use App\Traits\HasLikes;
 
@@ -20,5 +21,15 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }   
+    }
+    
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    } 
+
+    public function path()
+    {
+        return route('statuses.show', $this->status_id . '#comment-' . $this->id);
+    }
 }

@@ -33,7 +33,11 @@ class CanLikeStatusesTest extends TestCase
 
         $this->assertCount(0, $status->likes); //0 == $status-likes->count()
 
-        $this->actingAs($user)->postJson( route('statuses.likes.store', $status) ); // Actuando como usuario indicado hacemos un POST JSON
+        $response = $this->actingAs($user)->postJson( route('statuses.likes.store', $status) ); // Actuando como usuario indicado hacemos un POST JSON
+        
+        $response->assertJsonFragment([
+            'likes_count' => 1
+        ]);
         
         /*  Verifica en la base de datos que hay un tabla llamada likes 
             Que dentro exista un user_id y status_id igual a los indicados
@@ -44,8 +48,13 @@ class CanLikeStatusesTest extends TestCase
 
         //assert unlike
 
-        $this->actingAs($user)->deleteJson( route('statuses.likes.destroy', $status) ); // Actuando como usuario indicado hacemos un POST JSON
+        $response = $this->actingAs($user)->deleteJson( route('statuses.likes.destroy', $status) ); // Actuando como usuario indicado hacemos un POST JSON
         
+
+        $response->assertJsonFragment([
+            'likes_count' => 0
+        ]);
+
         $this->assertCount(0, $status->fresh()->likes);
 
         $this->assertDatabaseMissing('likes', ['user_id' => $user->id]);

@@ -1,17 +1,17 @@
 <template>
     <div @click="redirectIsGuest">
-        <status-list-item 
-            v-for="status in statuses" 
-            :status="status"
-            :key="status.id" 
-        />
+        <transition-group name="status-list-transition">
+            <status-list-item 
+                v-for="status in statuses" 
+                :status="status"
+                :key="status.id" 
+            />
+        </transition-group>
     </div>
 </template>
 
 <script>
-    import StatusListItem from './StatusListItem'
     export default {
-        components: { StatusListItem },
         props: {
             url: String
         },
@@ -45,3 +45,9 @@
         
     }
 </script>
+
+<style>
+    .status-list-transition-move {
+        transition: all .8s;
+    }
+</style>

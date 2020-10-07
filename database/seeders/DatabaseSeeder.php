@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             CommentSeeder::class,
             LikeStatusSeeder::class,
-            LikeCommentSeeder::class
+            LikeCommentSeeder::class,
+            FriendshipSeeder::class
         ]);
 
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');

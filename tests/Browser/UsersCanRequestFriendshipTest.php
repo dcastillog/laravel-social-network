@@ -38,6 +38,9 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
                     ->press('@request-friendship')
                     ->waitForText('Cancelar solicitud')
                     ->assertSee('Cancelar solicitud')
+                    ->visit(route('users.show', $recipient))
+                    ->waitForText('Cancelar solicitud')
+                    ->assertSee('Cancelar solicitud')
                     ->press('@request-friendship')
                     ->waitForText('Enviar solicitud de amistad')
                     ->assertSee('Enviar solicitud de amistad')
@@ -60,11 +63,13 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($sender, $recipient) {
             $browser->loginAs($sender)
                     ->visit(route('users.show', $recipient))
+                    ->waitForText('Eliminar de mis amigos')
                     ->assertSee('Eliminar de mis amigos')
                     ->press('@request-friendship')
                     ->waitForText('Enviar solicitud de amistad')
                     ->assertSee('Enviar solicitud de amistad')
                     ->visit(route('users.show', $recipient))
+                    ->waitForText('Enviar solicitud de amistad')
                     ->assertSee('Enviar solicitud de amistad')
                 ;
         });
@@ -85,9 +90,14 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($sender, $recipient) {
             $browser->loginAs($sender)
                     ->visit(route('users.show', $recipient))
-                    ->assertDontSee('Enviar solicitud de amistad')
+                    ->waitForText('Solicitud denegada')
+                    ->assertSee('Solicitud denegada')
+                    ->press('@request-friendship')
+                    ->waitForText('Solicitud denegada')
+                    ->assertSee('Solicitud denegada')
                     ->visit(route('users.show', $recipient))
-                    ->assertDontSee('Enviar solicitud de amistad')
+                    ->waitForText('Solicitud denegada')
+                    ->assertSee('Solicitud denegada')
                 ;
         });
     }

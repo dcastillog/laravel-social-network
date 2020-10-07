@@ -38,4 +38,30 @@ class UsersCanLikeCommentTest extends DuskTestCase
                     ->assertSeeIn('@comment-likes-count', 0);
         });
     }
+
+    /** @test */
+    public function users_can_see_likes_and_unlikes_in_real_time()
+    {
+        $user = User::factory()->create();
+        $comment = Comment::factory()->create();
+
+        $this->browse(function (Browser $browser1, Browser $browser2) use ($user, $comment) {
+            $browser1->visit('/home');
+
+            $browser2->loginAs($user)
+                    ->visit('/home')
+                    ->maximize()
+                    ->waitForText($comment->body)
+                    ->assertSeeIn('@comment-likes-count', 0) // se especifica un elemento
+                    ->press('@btn-comment-like')
+                    ->waitForText('TE GUSTA');
+
+            $browser1->assertSeeIn('@comment-likes-count', 1);
+
+            $browser2->press('@btn-comment-like')
+                    ->waitForText('ME GUSTA');
+
+            $browser1->pause(2000)->assertSeeIn('@comment-likes-count', 0);
+        });
+    }
 }

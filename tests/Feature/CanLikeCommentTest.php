@@ -26,18 +26,28 @@ class CanLikeCommentTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_like_and_unlike_comments()
     {
+        \Notification::fake();
+        
         $user   = User::factory()->create();
         $comments = Comment::factory()->create();
 
         $this->assertCount(0, $comments->likes);
 
-        $this->actingAs($user)->postJson( route('comments.likes.store', $comments) ); // Actuando como usuario indicado hacemos un POST JSON
-        
+        $response = $this->actingAs($user)->postJson( route('comments.likes.store', $comments) ); // Actuando como usuario indicado hacemos un POST JSON
+
+        $response->assertJsonFragment([
+            'likes_count' => 1
+        ]);
+
         $this->assertCount(1, $comments->fresh()->likes);
 
         $this->assertDatabaseHas('likes', ['user_id' => $user->id]);
         
-        $this->actingAs($user)->deleteJson( route('comments.likes.destroy', $comments) );
+        $response = $this->actingAs($user)->deleteJson( route('comments.likes.destroy', $comments) );
+
+        $response->assertJsonFragment([
+            'likes_count' => 0
+        ]);
 
         $this->assertJson(0, $comments->fresh()->likes);
 

@@ -1,6 +1,6 @@
 <template>
     <button 
-        v-show="localFriendshipStatus!=='denied'"
+        v-show="friendshipStatus!=='denied'"
         @click="toggleFriendshipRequest"  
          
     >
@@ -15,15 +15,18 @@
                 type: Object,
                 required: true
             },
-            friendshipStatus: {
-                type: String,
-                required: true
-            }
+            
         },
         data() {
             return {
-                localFriendshipStatus: this.friendshipStatus
+                friendshipStatus: ''
             }
+        },
+        created(){
+            axios.get(`/friendships/${this.recipient.name}`)
+            .then(res => {
+                this.friendshipStatus = res.data.friendship_status;
+            });
         },
         methods: {
             toggleFriendshipRequest() {
@@ -31,13 +34,13 @@
                 let method = this.getMethod();
                 axios[method](`/friendships/${this.recipient.name}`)
                 .then(res => {
-                    this.localFriendshipStatus = res.data.friendship_status
+                    this.friendshipStatus = res.data.friendship_status
                 }).catch(err => {
                     console.log(err.response.data)
                 });
             },
             getMethod(){
-                if(this.localFriendshipStatus === 'pending' || this.localFriendshipStatus === 'accepted') {
+                if(this.friendshipStatus === 'pending' || this.friendshipStatus === 'accepted') {
                     return 'delete';
                 }
                 return 'post';
@@ -45,10 +48,10 @@
         },
         computed: {
             getText(){
-                if(this.localFriendshipStatus === 'pending') {
+                if(this.friendshipStatus === 'pending') {
                     return 'Cancelar solicitud';
                 }
-                if(this.localFriendshipStatus === 'accepted') {
+                if(this.friendshipStatus === 'accepted') {
                     return 'Eliminar de mis amigos';
                 }
                 return 'Enviar solicitud de amistad';

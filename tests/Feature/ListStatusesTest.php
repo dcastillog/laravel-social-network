@@ -64,4 +64,12 @@ class ListStatusesTest extends TestCase
             $response->json('data.0.body'),  // == data[0]['body'] Verifica que sea el primero de la respuesta
         );
     }
+
+    /** @test */
+    public function can_see_individual_status()
+    {
+        $status = Status::factory()->create();
+
+        $this->get($status->path())->assertSee($status->body);
+    }
 }

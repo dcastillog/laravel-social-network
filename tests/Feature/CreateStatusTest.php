@@ -71,15 +71,13 @@ class CreateStatusTest extends TestCase
 
         Event::assertDispatched(StatusCreated::class, function($statusCreatedEvent){
             
-            $this->assertInstanceOf(ShouldBroadcast::class, $statusCreatedEvent);
             $this->assertInstanceOf(StatusResource::class, $statusCreatedEvent->status);
-            $this->assertInstanceOf(Status::class, $statusCreatedEvent->status->resource);
-            $this->assertEquals($statusCreatedEvent->status->id, Status::first()->id);
-            $this->assertEquals(
-                'socket-id', 
-                $statusCreatedEvent->socket, 
-                'The event ' . get_class($statusCreatedEvent) . 'must be call "dontBroadcastToCurrentUser" in the constructor.'
-            );
+            
+            $this->assertTrue(Status::first()->is($statusCreatedEvent->status->resource)); // Assert Instancia y Id
+
+            $this->assertEventChannelType('public', $statusCreatedEvent);
+            $this->assertEventChannelName('statuses', $statusCreatedEvent);
+            $this->assertDontBroadcastToCurrentUser($statusCreatedEvent);
 
             return true;
         }); //verificamos que se dispare el evento y hacemos verificacion
@@ -113,4 +111,8 @@ class CreateStatusTest extends TestCase
             'message', 'errors' => ['body']
         ]);
     }
+    
+    
+
+    
 }

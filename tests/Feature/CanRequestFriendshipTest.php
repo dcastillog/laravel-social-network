@@ -14,6 +14,23 @@ class CanRequestFriendshipTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function can_get_all_friendship_requests_received()
+    {
+        $sender = User::factory()->create();
+        $recipient = User::factory()->create();
+
+        $sender->sendFriendRequestTo($recipient);
+
+        Friendship::factory()->count(2)->create();
+
+        $this->actingAs($recipient);
+
+        $response = $this->get(route('accept-friendships.index'));
+
+        $this->assertCount(1, $response->viewData('friendshipRequests')); //captura variable que se manda desde controller
+    }
+
+    /** @test */
     public function guests_cannot_create_friendship_request()
     {
         $recipient = User::factory()->create();
