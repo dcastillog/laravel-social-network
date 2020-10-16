@@ -16,8 +16,9 @@ use App\Http\Controllers\ReadNotificationController;
 
 Auth::routes();
 
+Route::view('/', 'welcome')->name('welcome');
 
-Route::view('/home','home');
+Route::view('/home','home')->middleware('auth');
 
 // Statuses routes
 Route::get('statuses', [StatusController::class, 'index'])->name('statuses.index');
@@ -56,7 +57,6 @@ Route::delete('accept-friendships/{sender}', [AcceptFriendshipsController::class
 
 // Notifications routes
 Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index')->middleware('auth');
-
 
 // Read Notifications routes
 Route::post('read-notifications/{notification}', [ReadNotificationController::class, 'store'])->name('read-notifications.store')->middleware('auth');

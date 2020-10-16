@@ -19,10 +19,26 @@
 <body>
     
     <div id="app">
-        @include('partials.navbar')
+        {{-- @include('partials.navbar') --}}
+        
+        <navbar></navbar>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <left-sidebar></left-sidebar>
+                    </div>
+        
+                    <div class="col-md-6 mx-auto">
+                        <router-view></router-view>
+                    </div>
+        
+                    <div class="col-md-3 bg-dark">
+                        {{-- <right-sidebar /> --}}
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 

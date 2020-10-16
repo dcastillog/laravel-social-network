@@ -31,6 +31,9 @@ class Status extends Model
 
     public function path()
     {
-        return route('statuses.show', $this);
+        // return route('statuses.show', $this);
+
+        return 'estado/' . $this->id;
+
     }
 }

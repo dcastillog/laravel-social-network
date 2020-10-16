@@ -47,10 +47,10 @@ class User extends Authenticatable
         return 'name';
     }
 
-    public function link()
-    {
-        return route('users.show', $this);
-    }
+    // public function link()
+    // {
+    //     return route('users.show', $this);
+    // }
 
     public function avatar()
     {

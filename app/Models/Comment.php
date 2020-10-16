@@ -30,6 +30,8 @@ class Comment extends Model
 
     public function path()
     {
-        return route('statuses.show', $this->status_id . '#comment-' . $this->id);
+        // return route('statuses.show', $this->status_id . '#comment-' . $this->id);
+
+        return 'estado/' . $this->status_id . '#comment-' . $this->id;
     }
 }

@@ -1,10 +1,14 @@
 <template>
     <div>
-        <comment-list-item 
-            v-for="comment in comments" 
-            :comment="comment"
-            :key="comment.id" 
-            class="mb-3" />
+        <transition-group name="comment-list-transition">
+            <comment-list-item 
+                v-for="comment in comments" 
+                :comment="comment"
+                :key="comment.id" 
+                class="mb-3" 
+            />
+
+        </transition-group>
     </div>
 </template>
 
@@ -35,3 +39,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .comment-list-transition-move {
+        transition: all .2s;
+    }
+</style>

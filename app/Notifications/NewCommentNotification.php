@@ -60,7 +60,7 @@ class NewCommentNotification extends Notification
     {
         return [
             'link' => $this->comment->path(),
-            'message' => "{$this->comment->user->name} comentó tu publicación."
+            'message' => "{$this->comment->user->name} ha comentado " . $this->comment->body . "."
         ];
     }
 

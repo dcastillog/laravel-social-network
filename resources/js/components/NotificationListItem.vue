@@ -3,11 +3,16 @@
     <div class="dropdown-item d-flex align-items-center"
         :class="isRead ? '' : 'bg-light'"
     >
-        <a  
+        <!-- <a  
             :dusk="notification.id"
             :href="notification.data.link"
             class="dropdown-item" 
-        >{{ notification.data.message }}</a> 
+        >{{ notification.data.message }}</a>  -->
+
+        <router-link
+            :to="{path: notification.data.link}"
+            class="dropdown-item"
+        >{{ notification.data.message }}</router-link>
 
         <button v-if="isRead" 
             @click.stop="markAsUnread"

@@ -40,7 +40,7 @@
                 console.log(this.currentUser);
                 Echo.private(`App.Models.User.${this.currentUser.id}`)
                     .notification(notification => {
-                        console.log(notification.type);
+                        console.log(notification);
                         this.count++;
                         this.notifications.push({
                             id: notification.id,
